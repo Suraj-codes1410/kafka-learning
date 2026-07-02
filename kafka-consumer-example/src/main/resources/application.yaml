@@ -3,7 +3,7 @@ spring:
   Kafka:
     consumer:
       bootstrap-servers : localhost:9092
-      group-id: jt-group-1
+      group-id: jt-group
   application:
     name: kafka-consumer-example
 
