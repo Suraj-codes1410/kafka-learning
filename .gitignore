@@ -1,2 +1,46 @@
-target/
+# ===========================
+# IntelliJ IDEA
+# ===========================
+.idea/
+**/.idea/
+*.iml
 
+# ===========================
+# Maven
+# ===========================
+**/target/
+
+# Maven Wrapper JAR (keep it tracked)
+!**/.mvn/wrapper/maven-wrapper.jar
+
+# ===========================
+# Logs
+# ===========================
+*.log
+
+# ===========================
+# OS Files
+# ===========================
+.DS_Store
+Thumbs.db
+
+# ===========================
+# VS Code
+# ===========================
+.vscode/
+
+# ===========================
+# Eclipse / STS
+# ===========================
+.project
+.classpath
+.settings/
+.factorypath
+.springBeans
+.sts4-cache/
+
+# ===========================
+# Temporary Files
+# ===========================
+*.tmp
+*.swp
