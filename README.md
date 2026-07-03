@@ -296,3 +296,101 @@ Compiles code, runs tests, and packages the application into a `.jar` (or `.war`
 ```bash
 mvn test
 ```
+Runs unit tests only, using the project's configured test framework (e.g., JUnit).
+ 
+```bash
+mvn spring-boot:run
+```
+Runs the Spring Boot application directly, without needing to build and run a separate JAR — ideal for local development.
+ 
+```bash
+mvn dependency:tree
+```
+Prints the full dependency graph, including transitive dependencies — useful for resolving version conflicts.
+ 
+---
+ 
+## 📤 Producer Boilerplate
+ 
+**REST Controller** — exposes an HTTP endpoint to trigger a publish:
+ 
+```java
+@RestController
+@RequestMapping("/api/customers")
+public class CustomerController {
+ 
+    private final CustomerPublisherService publisherService;
+ 
+    public CustomerController(CustomerPublisherService publisherService) {
+        this.publisherService = publisherService;
+    }
+ 
+    @PostMapping
+    public ResponseEntity<String> publishCustomer(@RequestBody Customer customer) {
+        publisherService.publish(customer);
+        return ResponseEntity.ok("Customer event published");
+    }
+}
+```
+Accepts an HTTP `POST` request and delegates the actual Kafka publishing to a dedicated service — keeps the controller thin.
+ 
+**Publisher Service** — wraps `KafkaTemplate`:
+ 
+```java
+@Service
+public class CustomerPublisherService {
+ 
+    private final KafkaTemplate<String, Customer> kafkaTemplate;
+    private static final String TOPIC = "customer-events";
+ 
+    public CustomerPublisherService(KafkaTemplate<String, Customer> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
+ 
+    public void publish(Customer customer) {
+        kafkaTemplate.send(TOPIC, customer.id(), customer);
+    }
+}
+```
+`KafkaTemplate` is Spring's high-level abstraction over the native Kafka producer — `send()` here uses the customer's ID as the message **key**, which determines the target partition.
+ 
+---
+ 
+## 📥 Consumer Boilerplate
+ 
+**Consumer Service** — listens for messages:
+ 
+```java
+@Service
+public class CustomerConsumerService {
+ 
+    @KafkaListener(topics = "customer-events", groupId = "customer-consumer-group")
+    public void consume(Customer customer) {
+        System.out.println("Received customer: " + customer);
+        // business logic here
+    }
+}
+```
+`@KafkaListener` subscribes this method to the given topic and group — Spring handles polling, deserialization, and offset commits automatically (with default settings).
+ 
+---
+ 
+## 🧾 Sample DTO
+ 
+```java
+public record Customer(
+    String id,
+    String name,
+    String email
+) {}
+```
+A Java `record` is ideal for Kafka DTOs — immutable, concise, and comes with `equals()`, `hashCode()`, and `toString()` generated for free.
+ 
+---
+ 
+## 🐞 Common Errors & Troubleshooting
+ 
+| Error | Cause | Solution |
+|---|---|---|
+| **Port already in use** | Another process (or leftover container) is bound to `9092` or `2181`. | Run `docker ps` to find the conflicting container, then `docker stop <id>`, or change the port mapping in `docker-compose.yml`. |
+| **Kafka not running / connection refused** | Broker container isn't up, or `bootstrap-servers` points to the wrong host/port. | Run `docker compose up -d` and confirm with `docker ps` and `docker logs <kafka_container>`. |
