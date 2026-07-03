@@ -403,3 +403,83 @@ A Java `record` is ideal for Kafka DTOs — immutable, concise, and comes with `
 | **Spring Boot version mismatch** | Using Spring Kafka features not supported by the declared Spring Boot version. | Confirm `spring-boot-starter-parent` version aligns with the Spring Kafka version in use (check the official compatibility table). |
  
 ---
+
+## 🔧 Useful Git Commands
+ 
+```bash
+git clone <repo-url>
+```
+Downloads a full copy of a remote repository (including history) to your local machine.
+ 
+```bash
+git status
+```
+Shows which files are staged, unstaged, or untracked in your working directory.
+ 
+```bash
+git add <file>
+```
+Stages changes, marking them to be included in the next commit. Use `git add .` to stage everything.
+ 
+```bash
+git commit -m "message"
+```
+Saves staged changes as a new snapshot in the repository's history, with a descriptive message.
+ 
+```bash
+git push
+```
+Uploads local commits to the remote repository (e.g., GitHub).
+ 
+```bash
+git pull
+```
+Fetches and merges changes from the remote repository into your current local branch.
+ 
+---
+ 
+## 🌟 Best Practices
+ 
+- **Use meaningful topic names** — e.g., `order-created`, `payment-failed`, not `topic1`.
+- **One responsibility per consumer** — avoid a single `@KafkaListener` handling unrelated business logic.
+- **Use DTOs instead of raw `Map<String, Object>`** — type safety catches bugs at compile time.
+- **Prefer Java `record`s** for DTOs where possible — concise and immutable.
+- **Separate producer and consumer modules/services** — keeps deployment and scaling independent.
+- **Avoid hardcoding values** (topic names, broker URLs) — externalize to `application.yml` or environment variables.
+- **Centralize configuration in `application.yml`** rather than scattering `@Value` annotations across classes.
+> 💡 **Tip:** Treat Kafka topics like public API contracts — changing a message schema without versioning can silently break every downstream consumer.
+ 
+---
+ 
+## 🔮 Future Learning Roadmap
+ 
+Planned projects and topics to deepen Kafka expertise:
+ 
+- [ ] **Order Management** service (event-sourced)
+- [ ] **Notification Service** (consumes multiple event types)
+- [ ] **Payment Service** (with idempotency handling)
+- [ ] **Inventory Service** (stock updates via events)
+- [ ] Full **microservices** architecture tying the above together
+- [ ] **Kafka Streams** for real-time stream processing
+- [ ] **Avro** serialization
+- [ ] **Schema Registry** integration
+- [ ] **Dead Letter Queue (DLQ)** patterns
+- [ ] **Retry** strategies (exponential backoff, retry topics)
+- [ ] Kafka **Transactions** (exactly-once producer/consumer)
+- [ ] **Exactly-once semantics** end-to-end
+- [ ] **Monitoring** with Prometheus
+- [ ] **Dashboards** with Grafana
+---
+ 
+## 📖 References
+ 
+- [Apache Kafka Documentation](https://kafka.apache.org/documentation/)
+- [Spring for Apache Kafka Reference](https://docs.spring.io/spring-kafka/reference/)
+- [Spring Boot Documentation](https://docs.spring.io/spring-boot/documentation.html)
+- [Docker Documentation](https://docs.docker.com/)
+---
+ 
+<p align="center">
+  <sub>Built as a personal Kafka learning log — updated as new concepts are learned and implemented.</sub>
+</p>
+ 
