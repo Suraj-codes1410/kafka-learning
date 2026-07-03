@@ -195,3 +195,104 @@ Creates a new topic named `my-topic` with 3 partitions and a replication factor 
 ```bash
 kafka-topics.sh --list --bootstrap-server localhost:9092
 ```
+Shows all topics currently available on the cluster.
+ 
+**Describe Topic**
+```bash
+kafka-topics.sh --describe --topic my-topic --bootstrap-server localhost:9092
+```
+Displays partition count, leader/replica assignment, and ISR (in-sync replicas) for a topic.
+ 
+**Delete Topic**
+```bash
+kafka-topics.sh --delete --topic my-topic --bootstrap-server localhost:9092
+```
+Permanently deletes a topic and its data. Requires `delete.topic.enable=true` on the broker.
+ 
+**Console Producer**
+```bash
+kafka-console-producer.sh --topic my-topic --bootstrap-server localhost:9092
+```
+Opens an interactive prompt — anything you type and press Enter on gets published as a message.
+ 
+**Console Consumer**
+```bash
+kafka-console-consumer.sh --topic my-topic --bootstrap-server localhost:9092 --from-beginning
+```
+Reads and prints messages from a topic. `--from-beginning` replays all retained messages, not just new ones.
+ 
+**List Consumer Groups**
+```bash
+kafka-consumer-groups.sh --list --bootstrap-server localhost:9092
+```
+Shows all active/known consumer groups on the cluster.
+ 
+**Describe Consumer Group (Offsets & Lag)**
+```bash
+kafka-consumer-groups.sh --describe --group my-group --bootstrap-server localhost:9092
+```
+Shows current offset, log-end-offset, and **lag** (how far behind the consumer is) per partition — critical for debugging slow consumers.
+ 
+---
+ 
+## ⚙️ Spring Boot Configuration
+ 
+### Producer (`application.yml`)
+ 
+```yaml
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+```
+ 
+### Consumer (`application.yml`)
+ 
+```yaml
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: my-consumer-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.example.kafka.dto"
+        spring.json.value.default.type: com.example.kafka.dto.Customer
+```
+ 
+### Property Reference
+ 
+| Property | Explanation |
+|---|---|
+| `bootstrap-servers` | Address(es) of the Kafka broker(s) the client connects to first, to discover the rest of the cluster. |
+| `group-id` | Identifies which consumer group this consumer belongs to — partitions are load-balanced within a group. |
+| `key-serializer` / `value-serializer` | Convert Java objects into bytes before sending (producer side). |
+| `key-deserializer` / `value-deserializer` | Convert bytes back into Java objects on receipt (consumer side). |
+| `spring.json.trusted.packages` | Whitelist of Java packages the `JsonDeserializer` is allowed to deserialize into — a security guard against arbitrary class instantiation. |
+| `spring.json.value.default.type` | Fallback target type used if the message doesn't carry type headers. |
+ 
+---
+ 
+## 📦 Maven Commands
+ 
+```bash
+mvn clean
+```
+Deletes the `target/` directory, removing previously compiled artifacts — ensures a fresh build.
+ 
+```bash
+mvn compile
+```
+Compiles the main source code without running tests or packaging.
+ 
+```bash
+mvn package
+```
+Compiles code, runs tests, and packages the application into a `.jar` (or `.war`) in `target/`.
+ 
+```bash
+mvn test
+```
