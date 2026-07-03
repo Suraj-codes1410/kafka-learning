@@ -394,3 +394,12 @@ A Java `record` is ideal for Kafka DTOs — immutable, concise, and comes with `
 |---|---|---|
 | **Port already in use** | Another process (or leftover container) is bound to `9092` or `2181`. | Run `docker ps` to find the conflicting container, then `docker stop <id>`, or change the port mapping in `docker-compose.yml`. |
 | **Kafka not running / connection refused** | Broker container isn't up, or `bootstrap-servers` points to the wrong host/port. | Run `docker compose up -d` and confirm with `docker ps` and `docker logs <kafka_container>`. |
+| **Consumer not receiving messages** | Wrong topic name, mismatched `group-id`, or consumer started after messages were sent (and `auto-offset-reset` is `latest`). | Verify topic name matches exactly; set `spring.kafka.consumer.auto-offset-reset: earliest` to replay old messages. |
+| **Serialization error** | Producer's serializer doesn't match the object type being sent. | Ensure `value-serializer` matches your payload type (e.g., use `JsonSerializer` for POJOs/records, not `StringSerializer`). |
+| **`JsonDeserializer` trusted packages error** | Consumer blocks deserialization into a package not explicitly trusted, as a security measure. | Add the DTO's package to `spring.json.trusted.packages`, or use `*` only in local/dev environments. |
+| **Missing dependency** | `spring-kafka` or `kafka-clients` not declared in `pom.xml`. | Add the `spring-kafka` starter dependency and run `mvn clean install`. |
+| **Maven build errors** | Version mismatch between Spring Boot and Spring Kafka, or corrupted local `.m2` cache. | Check the Spring Kafka/Spring Boot compatibility matrix; try `mvn clean install -U` to force-update dependencies. |
+| **Docker errors on startup** | Insufficient memory allocated to Docker, or stale volumes from a previous run. | Increase Docker Desktop's memory limit; run `docker compose down -v` to clear old volumes, then restart. |
+| **Spring Boot version mismatch** | Using Spring Kafka features not supported by the declared Spring Boot version. | Confirm `spring-boot-starter-parent` version aligns with the Spring Kafka version in use (check the official compatibility table). |
+ 
+---
