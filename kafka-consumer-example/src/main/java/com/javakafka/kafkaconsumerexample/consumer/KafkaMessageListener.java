@@ -1,6 +1,6 @@
 package com.javakafka.kafkaconsumerexample.consumer;
 
-import com.javakafka.kafkaconsumerexample.dto.Customer;
+import com.javakafka.kafkacommon.dto.Customer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -14,9 +14,11 @@ public class KafkaMessageListener {
     //
     //This met
 
-    @KafkaListener(topics="javatechieDemo",groupId = "jt-group")
-    public void consumeEvents(Customer customer){
-        log.info("consumer1 consume the message{}" , customer.toString());
+
+    @KafkaListener(topics = "javatechieDemo", groupId = "jt-group")
+    public void consume(Customer customer) {
+
+        log.info("Received : {}", customer);
 
     }
 
