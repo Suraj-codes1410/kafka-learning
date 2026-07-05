@@ -1,24 +1,24 @@
-spring:
-  #consumer port
-  kafka:
-    consumer:
-      bootstrap-servers : localhost:9092
-      group-id: jt-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-    properties:
-      spring:
-        json:
-          trusted:
-            packages: "*"
-
-      spring.json.value.default.type: com.javakafka.kafkaconsumerexample.dto.Customer
-
-      spring.json.use.type.headers: false
-
-
-  application:
-    name: kafka-consumer-example
-
-server:
-  port: 9192
+#spring:
+#  #consumer port
+#  kafka:
+#    consumer:
+#      bootstrap-servers : localhost:9092
+#      group-id: jt-group
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+#    properties:
+#      spring:
+#        json:
+#          trusted:
+#            packages: "*"
+#
+#      spring.json.value.default.type: com.javakafka.kafkacommon.dto.Customer
+#
+#      spring.json.use.type.headers: false
+#
+#
+#  application:
+#    name: kafka-consumer-example
+#
+#server:
+#  port: 9192
