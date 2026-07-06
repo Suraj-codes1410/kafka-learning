@@ -4,6 +4,7 @@ import com.javakafka.kafkacommon.dto.Customer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,12 +16,12 @@ public class KafkaMessageListener {
     //This met
 
 
-    @KafkaListener(topics = "javatechieDemo", groupId = "jt-group")
-    public void consume(Customer customer) {
-
-        log.info("Received : {}", customer);
-
-    }
+//    @KafkaListener(topics = "java-partition-learn", groupId = "jt-group")
+//    public void consume(Customer customer) {
+//
+//        log.info("Received : {}", customer);
+//
+//    }
 
 
 
@@ -28,11 +29,10 @@ public class KafkaMessageListener {
     // In real World scenarios one should write multiple consumer code for same topic
     // If there are a lot of messages from the producers there will be a lag (consumer doesnt consume the messages)
 
-//     @KafkaListener(topics="javatechie-demo1",groupId = "jt-group")
-//    public void consume1(String message){
-//        log.info("consumer1 consume the message{}" , message);
-//
-//    }
+     @KafkaListener(topics="java-partition-learn",groupId = "jt-group",topicPartitions = {@TopicPartition(topic="java-partition-learn",partitions = {"2"})})
+    public void consume1(String message){
+        log.info("consumer1 consume the message{}" ,message );
+    }
 //    @KafkaListener(topics="javatechie-demo1",groupId = "jt-group")
 //    public void consume2(String message){
 //        log.info("consumer2 consume the message{}" , message);
