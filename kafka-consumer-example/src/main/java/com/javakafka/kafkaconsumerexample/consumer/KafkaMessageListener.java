@@ -1,11 +1,19 @@
 package com.javakafka.kafkaconsumerexample.consumer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javakafka.kafkacommon.dto.Customer;
+import com.javakafka.kafkacommon.dto.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.TopicPartition;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 public class KafkaMessageListener {
@@ -48,4 +56,21 @@ public class KafkaMessageListener {
 //        log.info("consumer4 consume the message{}" , message);
 //
 //    }
+
+
+    @KafkaListener(topics = "{app.topic.name}",groupId = "javatechie-group")
+    public void consumeEvents(User user , @Header(KafkaHeaders.RECEIVED_TOPIC) String topic , @Header(KafkaHeaders.OFFSET) long offset){
+         try{
+         log.info("Recieved : {} from {} offset {}",new ObjectMapper().writeValueAsString(user));
+             List<String> restrictedIpList = Stream.of("32.241.244.236","15.55.49.164","81.1.995.246").toList();
+             if(restrictedIpList.contains(user.getIpAddress())){
+                 throw new RuntimeException("Invalid IP Address recieved !");
+             }
+
+         } catch (JsonProcessingException e) {
+             throw new RuntimeException(e);
+         }
+    }
+
+
 }
