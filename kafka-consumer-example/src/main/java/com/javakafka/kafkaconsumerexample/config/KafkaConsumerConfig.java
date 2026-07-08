@@ -13,6 +13,14 @@
 //import java.util.HashMap;
 //import java.util.Map;
 //
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
+import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.util.backoff.FixedBackOff;
+
 //// For customization use Java based Config instead of aplication.yml file
 //
 //
@@ -57,3 +65,4 @@
 //        return factory;
 //    }
 //}
+
