@@ -74,11 +74,13 @@ public class KafkaMessageListener {
 //         }
 //    }
 
-    @RetryableTopic(
-            attempts = "4",
-            backoff = @Backoff(delay = 5000)
-    )
-    @KafkaListener(
+    //Used when Only when Retryable Annotation is used
+
+//    @RetryableTopic(   //  better for longer delay in retry
+//            attempts = "4",
+//            backoff = @Backoff(delay = 5000)
+//    )
+    @KafkaListener(                    // Better for shorter retries
             topics = "user-registration-topic",
             groupId = "registration-group"
     )
@@ -88,6 +90,5 @@ public class KafkaMessageListener {
 
         throw new RuntimeException("SMTP Server Down");
     }
-
 
 }
